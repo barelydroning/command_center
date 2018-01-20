@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import droneReducer from './drone/reducer'
+import dashboardReducer from './dashboard/reducer'
 
 const reducers = {
-  drone: droneReducer
+  dashboard: dashboardReducer
 }
 
 export default combineReducers(reducers)
