@@ -5,4 +5,6 @@ const reducers = {
   dashboard: dashboardReducer
 }
 
-export default combineReducers(reducers)
+export default reducers
+
+// export default combineReducers(reducers)

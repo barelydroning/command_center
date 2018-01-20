@@ -11,12 +11,14 @@ import reducers from './reducers'
 
 import { Provider } from 'react-redux'
 
+const middlewares = [thunk]
+
 const store = createStore(
   combineReducers({
     ...reducers
   }),
   compose(
-    applyMiddleware(thunk),
+    applyMiddleware(...middlewares),
     window.devToolsExtension ? window.devToolsExtension() : f => f
   )
 )

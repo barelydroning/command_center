@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
+import { connect } from 'react-redux'
 
 import Dashboard from './dashboard'
 
@@ -9,4 +10,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default connect()(App)
