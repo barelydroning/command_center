@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Title, Button } from '../../common/components'
 import { connectClient, disconnectClient, setDrones, selectDrone } from '../actions'
 
+import { reduxForm, Field } from 'redux-form'
+
 import openSocket from 'socket.io-client'
 
 class Dashboard extends Component {
@@ -36,8 +38,18 @@ class Dashboard extends Component {
         <Title text={'Drone command center'} />
         <Button text={'Connect drone'} onClick={() => socket.emit('connect_drone')} />
         {isClientConnected ? 'CONNECTED' : 'DISCONNECTED'}
-        <div>
-          {availableDrones.map(drone => <Drone key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row'
+        }}>
+          <div>
+            {availableDrones.map(drone => <Drone key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
+          </div>
+          <div style={{
+            padding: 10
+          }}>
+            <TestForm />
+          </div>
         </div>
       </div>
     )
@@ -63,6 +75,35 @@ const Drone = ({text, onClick, selected}) => (
     {text}
   </div>
 )
+
+const Input = ({input: { ...restInput }, text, style, ...rest}) => {
+  return (
+    <div>
+      <label>{text}</label>
+      <input type='text'
+        style={{
+          padding: 7,
+          borderRadius: 5,
+          fontSize: '1.2em'
+        }}
+        {...rest}
+        {...restInput}
+        />
+    </div>
+  )
+}
+
+let TestForm = ({handleSubmit}) => (
+  <form onSubmit={handleSubmit}>
+    <Field name='fippel' placeholder='Test' component={Input} />
+    <button onClick={handleSubmit}>Fest</button>
+  </form>
+)
+
+TestForm = reduxForm({
+  form: 'test',
+  onSubmit: (test, dispatch) => console.log('FEPP', test, dispatch)
+})(connect()(TestForm))
 
 const mapStateToProps = state => ({
   availableDrones: state.dashboard.availableDrones,

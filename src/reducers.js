@@ -1,10 +1,9 @@
-import { combineReducers } from 'redux'
 import dashboardReducer from './dashboard/reducer'
+import { reducer as formReducer } from 'redux-form'
 
 const reducers = {
-  dashboard: dashboardReducer
+  dashboard: dashboardReducer,
+  form: formReducer
 }
 
 export default reducers
-
-// export default combineReducers(reducers)
