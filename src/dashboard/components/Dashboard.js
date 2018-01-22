@@ -50,6 +50,9 @@ class Dashboard extends Component {
         <Title text={'Drone command center'} style={{
           color: 'white'
         }} />
+
+        <ConnectionLight isConnected={isClientConnected} drone={selectedDrone} />
+
         <Button text={'Connect drone'} onClick={() => socket.emit('connect_drone')} />
         {isClientConnected ? 'CONNECTED' : 'DISCONNECTED'}
         <div style={{
@@ -69,6 +72,21 @@ class Dashboard extends Component {
     )
   }
 }
+
+const ConnectionLight = ({isConnected, drone}) => (
+  <div style={{
+    width: 30,
+    height: 30,
+    borderRadius: 30,
+    borderWidth: 2,
+    margin: 20,
+    borderColor: 'white',
+    borderStyle: 'solid',
+    backgroundColor: (isConnected && drone) ? '#15C56A' : (isConnected ? 'yellow' : 'red')
+  }}>
+
+  </div>
+)
 
 const Drone = ({text, onClick, selected}) => (
   <div style={{
