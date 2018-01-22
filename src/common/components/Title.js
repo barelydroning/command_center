@@ -4,10 +4,13 @@ const Title = ({text, style}) => (
   <div style={{
     color: 'rgb(72, 70, 72)',
     fontSize: '3em',
-    padding: 20,
+    paddingTop: 1,
+    paddingBottom: 1,
     fontWeight: 'bold',
-    letterSpacing: 5,
-    width: '100%',
+    letterSpacing: 2,
+    width: '90%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     textAlign: 'center',
     ...style
   }}>

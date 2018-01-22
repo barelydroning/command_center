@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Title, Button } from '../../common/components'
+import COLOR from '../../common/COLOR'
 import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand } from '../actions'
 
 import { reduxForm, Field } from 'redux-form'
@@ -39,22 +40,22 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { socket } = this.state
     const { dispatch, availableDrones, isClientConnected, selectedDrone } = this.props
 
     return (
       <div style={{
-        backgroundColor: '#687065',
-        minHeight: window.innerHeight
+        backgroundColor: COLOR.primary,
+        minHeight: window.innerHeight,
+        paddingTop: 50
       }}>
         <Title text={'Drone command center'} style={{
-          color: 'white'
+          color: COLOR.secondary,
+          textTransform: 'uppercase',
+          backgroundColor: COLOR.third
         }} />
 
         <ConnectionLight isConnected={isClientConnected} drone={selectedDrone} />
 
-        <Button text={'Connect drone'} onClick={() => socket.emit('connect_drone')} />
-        {isClientConnected ? 'CONNECTED' : 'DISCONNECTED'}
         <div style={{
           display: 'flex',
           flexDirection: 'row'
@@ -65,7 +66,7 @@ class Dashboard extends Component {
           <div style={{
             padding: 10
           }}>
-            <TestForm onSubmit={this.onSubmit} />
+            {selectedDrone && <TestForm onSubmit={this.onSubmit} />}
           </div>
         </div>
       </div>
@@ -83,18 +84,16 @@ const ConnectionLight = ({isConnected, drone}) => (
     borderColor: 'white',
     borderStyle: 'solid',
     backgroundColor: (isConnected && drone) ? '#15C56A' : (isConnected ? 'yellow' : 'red')
-  }}>
-
-  </div>
+  }} />
 )
 
 const Drone = ({text, onClick, selected}) => (
   <div style={{
-    backgroundColor: selected ? '#15C56A' : '#efefef',
-    color: selected ? 'white' : 'black',
+    backgroundColor: selected ? COLOR.secondary : COLOR.third,
+    color: selected ? COLOR.primary : COLOR.fourth,
     borderRadius: 10,
-    borderColor: '#e8e8e8',
-    borderWidth: 3,
+    borderColor: COLOR.third,
+    borderWidth: 1,
     borderStyle: 'solid',
     padding: 30,
     maxWidth: 300,
@@ -110,16 +109,20 @@ const Drone = ({text, onClick, selected}) => (
 
 const Input = ({input: { ...restInput }, text, style, ...rest}) => {
   return (
-    <div>
+    <div style={{
+      padding: 40
+    }}>
       <label style={{
         padding: 3,
-        letterSpacing: 2
+        letterSpacing: 2,
+        color: 'white'
       }}>{text}</label><br />
       <input type='text'
         style={{
           padding: 7,
           borderRadius: 5,
-          fontSize: '1.2em'
+          fontSize: '1.2em',
+          width: 400
         }}
         {...rest}
         {...restInput}
