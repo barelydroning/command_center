@@ -23,8 +23,17 @@ const selectedDrone = (state = null, {type, drone}) => {
     default: return state
   }
 }
+
+const selectedDroneData = (state = [], {type, data}) => {
+  switch (type) {
+    case actions.ADD_DRONE_DATA: return [...state, data]
+    default: return state
+  }
+}
+
 export default combineReducers({
   availableDrones,
   isClientConnected,
-  selectedDrone
+  selectedDrone,
+  selectedDroneData
 })

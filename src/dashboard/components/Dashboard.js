@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Title, Button } from '../../common/components'
 import COLOR from '../../common/COLOR'
-import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand } from '../actions'
+import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand, addDroneData } from '../actions'
 
 import { reduxForm, Field } from 'redux-form'
 
@@ -11,9 +11,9 @@ import openSocket from 'socket.io-client'
 class Dashboard extends Component {
   constructor (props) {
     super(props)
-    
+
     this.state = ({socket: openSocket('http://localhost:3001')})
-  
+
     this.state.socket.on('connect', () => {
       this.props.dispatch(connectClient())
     })
@@ -26,13 +26,15 @@ class Dashboard extends Component {
       this.props.dispatch(setDrones(drones))
     })
 
+    this.state.socket.on('drone_data', ({drone, ...rest}) => {
+      drone === this.props.selectedDrone && this.props.dispatch(addDroneData(rest))
+    })
+
     this.onSubmit = ({command}) => {
       const { socket } = this.state
       const { dispatch, selectedDrone } = this.props
       dispatch(sendCommand(socket, selectedDrone, command))
     }
-
-    // setTimeout(() => this.props.dispatch(setSocket(this.state.socket)), 1000)
   }
 
   componentDidMount () {
@@ -40,7 +42,7 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { dispatch, availableDrones, isClientConnected, selectedDrone } = this.props
+    const { dispatch, availableDrones, isClientConnected, selectedDrone, selectedDroneData } = this.props
 
     return (
       <div style={{
@@ -67,6 +69,11 @@ class Dashboard extends Component {
             padding: 10
           }}>
             {selectedDrone && <TestForm onSubmit={this.onSubmit} />}
+            <div style={{
+              color: 'white'
+            }}>
+              {'SIZE IS ' + selectedDroneData.length}
+            </div>
           </div>
         </div>
       </div>
@@ -144,7 +151,8 @@ TestForm = reduxForm({
 const mapStateToProps = state => ({
   availableDrones: state.dashboard.availableDrones,
   isClientConnected: state.dashboard.isClientConnected,
-  selectedDrone: state.dashboard.selectedDrone
+  selectedDrone: state.dashboard.selectedDrone,
+  selectedDroneData: state.dashboard.selectedDroneData
 })
 
 export default connect(mapStateToProps)(Dashboard)

@@ -24,10 +24,13 @@ export const sendCommand = (socket, drone, command) => {
     dispatch({type: SEND_COMMAND_LOADING})
 
     socket.emit('drone_command', drone, command)
-    console.log(socket, drone, command)
   }
 }
 
-export const SET_SOCKET = 'SET_SOCKET'
+export const ADD_DRONE_DATA = 'ADD_DRONE_DATA'
 
-export const setSocket = socket => ({type: SET_SOCKET})
+export const addDroneData = data => {
+  return dispatch => {
+    dispatch({type: ADD_DRONE_DATA, data})
+  }
+}
