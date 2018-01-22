@@ -6,7 +6,29 @@ import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand, a
 
 import { reduxForm, Field } from 'redux-form'
 
+import { VictoryLine, VictoryChart, VictoryTheme } from 'victory'
+
 import openSocket from 'socket.io-client'
+
+const Chart = ({data}) => (
+  <div style={{
+    width: 800
+  }}>
+    <VictoryChart
+
+    >
+      <VictoryLine
+        width={800}
+        domain={{y: [-Math.PI, Math.PI]}}
+        style={{
+          data: { stroke: COLOR.secondary },
+          parent: { border: '1px solid white' }
+        }}
+        data={data.map(({pitch}, i) => ({x: i, y: pitch}))}
+      />
+    </VictoryChart>
+  </div>
+)
 
 class Dashboard extends Component {
   constructor (props) {
@@ -75,6 +97,7 @@ class Dashboard extends Component {
               {'SIZE IS ' + selectedDroneData.length}
             </div>
           </div>
+          <Chart data={selectedDroneData} />
         </div>
       </div>
     )

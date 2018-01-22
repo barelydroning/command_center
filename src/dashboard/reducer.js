@@ -26,7 +26,7 @@ const selectedDrone = (state = null, {type, drone}) => {
 
 const selectedDroneData = (state = [], {type, data}) => {
   switch (type) {
-    case actions.ADD_DRONE_DATA: return [...state, data]
+    case actions.ADD_DRONE_DATA: return [...state, data].slice(-50)
     default: return state
   }
 }
