@@ -10,10 +10,15 @@ import { VictoryLine, VictoryChart, VictoryTheme } from 'victory'
 
 import openSocket from 'socket.io-client'
 
-const Chart = ({data, domainY}) => (
+const Chart = ({title, data, domainY}) => (
   <div style={{
-    width: 800
+    width: 400
   }}>
+    <div style={{
+      color: COLOR.secondary
+    }}>
+      {title}
+    </div>
     <VictoryChart
 
     >
@@ -87,14 +92,25 @@ class Dashboard extends Component {
           <div>
             {availableDrones.map(drone => <Drone key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
           </div>
-          <div style={{
-            padding: 10
+          {selectedDrone && <div style={{
+            display: 'flex',
+            flexDirection: 'row'
           }}>
-            {selectedDrone && <TestForm onSubmit={this.onSubmit} />}
-          </div>
-          <Chart data={selectedDroneData.map(({pitch}, i) => ({x: i, y: pitch}))} domainY={[-Math.PI, Math.PI]} />
-          <Chart data={selectedDroneData.map(({roll}, i) => ({x: i, y: roll}))} domainY={[-Math.PI, Math.PI]} />
-          <Chart data={selectedDroneData.map(({azimuth}, i) => ({x: i, y: azimuth}))} domainY={[-Math.PI, Math.PI]} />
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <Chart title={'Pitch'} data={selectedDroneData.map(({pitch}, i) => ({x: i, y: pitch}))} domainY={[-Math.PI, Math.PI]} />
+              <Chart title='Roll' data={selectedDroneData.map(({roll}, i) => ({x: i, y: roll}))} domainY={[-Math.PI, Math.PI]} />
+              <Chart title='Azimuth' data={selectedDroneData.map(({azimuth}, i) => ({x: i, y: azimuth}))} domainY={[-Math.PI, Math.PI]} />
+            </div>
+            <div style={{
+              padding: 10
+            }}>
+              <TestForm onSubmit={this.onSubmit} />
+            </div>
+          </div>}
         </div>
       </div>
     )
