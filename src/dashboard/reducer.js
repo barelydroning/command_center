@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
+import { List, fromJS } from 'immutable'
 import * as actions from './actions'
-
 
 const availableDrones = (state = [], {type, drones}) => {
   switch (type) {
@@ -24,10 +24,14 @@ const selectedDrone = (state = null, {type, drone}) => {
   }
 }
 
-const selectedDroneData = (state = [], {type, data}) => {
+const SELECTED_DRONE_DATA_BUFFER_SIZE = 50
+
+const selectedDroneData = (state = List(), {type, data}) => {
   switch (type) {
-    case actions.ADD_DRONE_DATA: return [...state, data].slice(-50)
-    default: return state
+    case actions.ADD_DRONE_DATA:
+      return state.size === SELECTED_DRONE_DATA_BUFFER_SIZE ? state.push(fromJS(data)).shift() : state.push(fromJS(data))
+    default:
+      return state
   }
 }
 

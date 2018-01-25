@@ -6,7 +6,7 @@ import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand, a
 
 import { reduxForm, Field } from 'redux-form'
 
-import { VictoryLine, VictoryChart, VictoryTheme } from 'victory'
+import { VictoryLine, VictoryChart } from 'victory'
 
 import openSocket from 'socket.io-client'
 
@@ -62,6 +62,8 @@ class Dashboard extends Component {
       const { dispatch, selectedDrone } = this.props
       dispatch(sendCommand(socket, selectedDrone, command))
     }
+
+    this.filterData = (data, prop) => data.map((dataPoint, i) => ({x: i, y: dataPoint.get(prop)}))
   }
 
   componentDidMount () {
@@ -96,14 +98,14 @@ class Dashboard extends Component {
             display: 'flex',
             flexDirection: 'row'
           }}>
-            
+
             <div style={{
               display: 'flex',
               flexDirection: 'column'
             }}>
-              <Chart title={'Pitch'} data={selectedDroneData.map(({pitch}, i) => ({x: i, y: pitch}))} domainY={[-Math.PI, Math.PI]} />
-              <Chart title='Roll' data={selectedDroneData.map(({roll}, i) => ({x: i, y: roll}))} domainY={[-Math.PI, Math.PI]} />
-              <Chart title='Azimuth' data={selectedDroneData.map(({azimuth}, i) => ({x: i, y: azimuth}))} domainY={[-Math.PI, Math.PI]} />
+              <Chart title={'Pitch'} data={this.filterData(selectedDroneData, 'pitch')} domainY={[-Math.PI, Math.PI]} />
+              <Chart title='Roll' data={this.filterData(selectedDroneData, 'roll')} domainY={[-Math.PI, Math.PI]} />
+              <Chart title='Azimuth' data={this.filterData(selectedDroneData, 'azimuth')} domainY={[-Math.PI, Math.PI]} />
             </div>
             <div style={{
               padding: 10
