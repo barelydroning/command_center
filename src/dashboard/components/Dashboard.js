@@ -69,10 +69,22 @@ class Dashboard extends Component {
       drone === this.props.selectedDrone && this.props.dispatch(addDroneData(rest))
     })
 
-    this.onSubmit = ({P, I, D}) => {
+    this.pitchSubmit = ({P, I, D}) => {
       const { socket } = this.state
       const { dispatch, selectedDrone } = this.props
       dispatch(sendCommand(socket, selectedDrone, JSON.stringify({P, I, D, type: 'pid', pid_type: 'pitch'})))
+    }
+
+    this.rollSubmit = ({P, I, D}) => {
+      const { socket } = this.state
+      const { dispatch, selectedDrone } = this.props
+      dispatch(sendCommand(socket, selectedDrone, JSON.stringify({P, I, D, type: 'pid', pid_type: 'roll'})))
+    }
+
+    this.baseSpeedSubmit = ({speed}) => {
+      const { socket } = this.state
+      const { dispatch, selectedDrone } = this.props
+      dispatch(sendCommand(socket, selectedDrone, JSON.stringify({type: 'base_speed', speed})))
     }
 
     this.filterData = (data, prop) => data.map((dataPoint, i) => ({x: i, y: dataPoint.get(prop)}))
@@ -106,7 +118,7 @@ class Dashboard extends Component {
           <div>
             {availableDrones.map(drone => <Drone key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
           </div>
-          {selectedDrone && <div style={{
+          {!selectedDrone && <div style={{
             display: 'flex',
             flexDirection: 'row'
           }}>
@@ -119,10 +131,16 @@ class Dashboard extends Component {
               <Chart title='Roll' data={this.filterData(selectedDroneData, 'roll')} domainY={[-Math.PI, Math.PI]} />
               <Chart title='Azimuth' data={this.filterData(selectedDroneData, 'azimuth')} domainY={[-Math.PI, Math.PI]} />
             </div>
-            <div style={{
-              padding: 10
-            }}>
-              <TestForm onSubmit={this.onSubmit} />
+            <div>
+              <div style={{
+                padding: 10,
+                display: 'flex',
+                flexDirection: 'row'
+              }}>
+                <PitchForm onSubmit={this.pitchSubmit} />
+                <RollForm onSubmit={this.rollSubmit} />
+                <BaseSpeedForm onSubmit={this.baseSpeedSubmit} />
+              </div>
               <Chart title='' />
             </div>
           </div>}
@@ -168,7 +186,7 @@ const Drone = ({text, onClick, selected}) => (
 const Input = ({input: { ...restInput }, text, style, ...rest}) => {
   return (
     <div style={{
-      padding: 40
+      padding: 5
     }}>
       <label style={{
         padding: 3,
@@ -180,7 +198,10 @@ const Input = ({input: { ...restInput }, text, style, ...rest}) => {
           padding: 7,
           borderRadius: 5,
           fontSize: '1.2em',
-          width: 400
+          width: 300,
+          backgroundColor: COLOR.third,
+          color: COLOR.secondary,
+          borderColor: COLOR.fourth
         }}
         {...rest}
         {...restInput}
@@ -189,18 +210,56 @@ const Input = ({input: { ...restInput }, text, style, ...rest}) => {
   )
 }
 
-let TestForm = ({handleSubmit, onSubmit}) => (
+const SmallTitle = ({text}) => (
+  <div style={{
+    color: 'white',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    padding: 10
+  }}>
+    {text}
+  </div>
+)
+
+let PitchForm = ({handleSubmit, onSubmit}) => (
+  <div>
+    <SmallTitle text='Pitch' />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Field name='P' text='P' placeholder='P' component={Input} />
+      <Field name='I' text='I' placeholder='I' component={Input} />
+      <Field name='D' text='D' placeholder='D' component={Input} />
+    </form>
+  </div>
+)
+
+PitchForm = reduxForm({
+  form: 'command'
+})(connect()(PitchForm))
+
+let RollForm = ({handleSubmit, onSubmit}) => (
+  <div>
+    <SmallTitle text='Roll' />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Field name='P' text='P' placeholder='P' component={Input} />
+      <Field name='I' text='I' placeholder='I' component={Input} />
+      <Field name='D' text='D' placeholder='D' component={Input} />
+    </form>
+  </div>
+)
+
+RollForm = reduxForm({
+  form: 'roll'
+})(connect()(RollForm))
+
+let BaseSpeedForm = ({handleSubmit, onSubmit}) => (
   <form onSubmit={handleSubmit(onSubmit)}>
-    <Field name='P' text='P' placeholder='P' component={Input} />
-    <Field name='I' text='I' placeholder='I' component={Input} />
-    <Field name='D' text='D' placeholder='D' component={Input} />
-    <Button text='Send stuff' onClick={handleSubmit(onSubmit)} />
+    <Field name='speed' text='Base speed' placeholder='Input speed' component={Input} />
   </form>
 )
 
-TestForm = reduxForm({
-  form: 'command'
-})(connect()(TestForm))
+BaseSpeedForm = reduxForm({
+  form: 'base_speed'
+})(connect()(BaseSpeedForm))
 
 const mapStateToProps = state => ({
   availableDrones: state.dashboard.availableDrones,
