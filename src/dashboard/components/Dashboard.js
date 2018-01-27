@@ -95,6 +95,7 @@ class Dashboard extends Component {
   }
 
   render () {
+    const { socket } = this.state
     const { dispatch, availableDrones, isClientConnected, selectedDrone, selectedDroneData } = this.props
 
     return (
@@ -141,7 +142,7 @@ class Dashboard extends Component {
                 <RollForm onSubmit={this.rollSubmit} />
                 <BaseSpeedForm onSubmit={this.baseSpeedSubmit} />
               </div>
-              <Chart title='' />
+              <KillSwitch dispatch={dispatch} socket={socket} selectedDrone={selectedDrone} />
             </div>
           </div>}
         </div>
@@ -149,6 +150,10 @@ class Dashboard extends Component {
     )
   }
 }
+
+const KillSwitch = ({dispatch, socket, selectedDrone}) => (
+  <Button text='Kill drone' onClick={() => dispatch(sendCommand(socket, selectedDrone, JSON.stringify({type: 'kill'})))} />
+)
 
 const ConnectionLight = ({isConnected, drone}) => (
   <div style={{
@@ -252,7 +257,9 @@ RollForm = reduxForm({
 })(connect()(RollForm))
 
 let BaseSpeedForm = ({handleSubmit, onSubmit}) => (
-  <form onSubmit={handleSubmit(onSubmit)}>
+  <form onSubmit={handleSubmit(onSubmit)} style={{
+    marginTop: 38
+  }}>
     <Field name='speed' text='Base speed' placeholder='Input speed' component={Input} />
   </form>
 )
