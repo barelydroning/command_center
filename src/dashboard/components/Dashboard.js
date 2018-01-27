@@ -119,7 +119,7 @@ class Dashboard extends Component {
           <div>
             {availableDrones.map(drone => <Drone key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
           </div>
-          {!selectedDrone && <div style={{
+          {selectedDrone && <div style={{
             display: 'flex',
             flexDirection: 'row'
           }}>
@@ -233,6 +233,7 @@ let PitchForm = ({handleSubmit, onSubmit}) => (
       <Field name='P' text='P' placeholder='P' component={Input} />
       <Field name='I' text='I' placeholder='I' component={Input} />
       <Field name='D' text='D' placeholder='D' component={Input} />
+      <Button text='test' onClick={handleSubmit(onSubmit)} />
     </form>
   </div>
 )
@@ -248,6 +249,7 @@ let RollForm = ({handleSubmit, onSubmit}) => (
       <Field name='P' text='P' placeholder='P' component={Input} />
       <Field name='I' text='I' placeholder='I' component={Input} />
       <Field name='D' text='D' placeholder='D' component={Input} />
+      <Button text='test' onClick={handleSubmit(onSubmit)} />
     </form>
   </div>
 )
