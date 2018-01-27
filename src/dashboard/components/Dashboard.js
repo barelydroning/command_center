@@ -35,6 +35,18 @@ const Chart = ({title, data, domainY}) => (
   </div>
 )
 
+const MotorsChart = ({title, motorsData, domainY}) => (
+  <div style={{
+    width: 600
+  }}>
+    <VictoryChart>
+      {motorsData.map((data, i) => <VictoryLine
+        width
+       />)}
+    </VictoryChart>
+  </div>
+)
+
 class Dashboard extends Component {
   constructor (props) {
     super(props)
@@ -57,10 +69,10 @@ class Dashboard extends Component {
       drone === this.props.selectedDrone && this.props.dispatch(addDroneData(rest))
     })
 
-    this.onSubmit = ({command}) => {
+    this.onSubmit = ({P, I, D}) => {
       const { socket } = this.state
       const { dispatch, selectedDrone } = this.props
-      dispatch(sendCommand(socket, selectedDrone, command))
+      dispatch(sendCommand(socket, selectedDrone, JSON.stringify({P, I, D, type: 'pid', pid_type: 'pitch'})))
     }
 
     this.filterData = (data, prop) => data.map((dataPoint, i) => ({x: i, y: dataPoint.get(prop)}))
@@ -111,6 +123,7 @@ class Dashboard extends Component {
               padding: 10
             }}>
               <TestForm onSubmit={this.onSubmit} />
+              <Chart title='' />
             </div>
           </div>}
         </div>
@@ -178,7 +191,10 @@ const Input = ({input: { ...restInput }, text, style, ...rest}) => {
 
 let TestForm = ({handleSubmit, onSubmit}) => (
   <form onSubmit={handleSubmit(onSubmit)}>
-    <Field name='command' text='Command' placeholder='Input command' component={Input} />
+    <Field name='P' text='P' placeholder='P' component={Input} />
+    <Field name='I' text='I' placeholder='I' component={Input} />
+    <Field name='D' text='D' placeholder='D' component={Input} />
+    <Button text='Send stuff' onClick={handleSubmit(onSubmit)} />
   </form>
 )
 
