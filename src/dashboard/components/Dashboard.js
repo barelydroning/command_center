@@ -35,18 +35,6 @@ const Chart = ({title, data, domainY}) => (
   </div>
 )
 
-const MotorsChart = ({title, motorsData, domainY}) => (
-  <div style={{
-    width: 600
-  }}>
-    <VictoryChart>
-      {motorsData.map((data, i) => <VictoryLine
-        width
-       />)}
-    </VictoryChart>
-  </div>
-)
-
 class Dashboard extends Component {
   constructor (props) {
     super(props)
@@ -88,6 +76,13 @@ class Dashboard extends Component {
     }
 
     this.filterData = (data, prop) => data.map((dataPoint, i) => ({x: i, y: dataPoint.get(prop)}))
+
+    this.getLastMotorSpeed = (data, motor) => this.getLast(data, `motorSpeed${motor}`)
+
+    this.getLast = (data, param) => {
+      const last = data.last()
+      return last ? last.get(param) : '-'
+    }
   }
 
   componentDidMount () {
@@ -143,6 +138,32 @@ class Dashboard extends Component {
                 <BaseSpeedForm onSubmit={this.baseSpeedSubmit} />
               </div>
               <KillSwitch dispatch={dispatch} socket={socket} selectedDrone={selectedDrone} />
+              <TuneButton socket={socket} selectedDrone={selectedDrone} />
+              <div style={{
+                padding: 20
+              }}>
+                <MotorSpeed motor={'A'} speed={this.getLastMotorSpeed(selectedDroneData, 'A')} />
+                <MotorSpeed motor={'B'} speed={this.getLastMotorSpeed(selectedDroneData, 'B')} />
+                <MotorSpeed motor={'C'} speed={this.getLastMotorSpeed(selectedDroneData, 'C')} />
+                <MotorSpeed motor={'D'} speed={this.getLastMotorSpeed(selectedDroneData, 'D')} />
+              </div>
+
+              <div style={{
+                padding: 20
+              }}>
+                <PidOutput type={'Pitch'} param={'P'} value={this.getLast(selectedDroneData, 'pitchP')} />
+                <PidOutput type={'Pitch'} param={'I'} value={this.getLast(selectedDroneData, 'pitchI')} />
+                <PidOutput type={'Pitch'} param={'D'} value={this.getLast(selectedDroneData, 'pitchD')} />
+              </div>
+
+              <div style={{
+                padding: 20
+              }}>
+                <PidOutput type='Roll' param='P' value={this.getLast(selectedDroneData, 'rollP')} />
+                <PidOutput type='Roll' param='I' value={this.getLast(selectedDroneData, 'rollI')} />
+                <PidOutput type='Roll' param='D' value={this.getLast(selectedDroneData, 'rollD')} />
+              </div>
+              
             </div>
           </div>}
         </div>
@@ -151,8 +172,49 @@ class Dashboard extends Component {
   }
 }
 
+const MotorSpeed = ({motor, speed}) => (
+  <div style={{
+    marginTop: 5,
+    color: COLOR.secondary
+  }}>
+    {`Motor ${motor}: ${speed}`}
+  </div>
+)
+
+const PidOutput = ({type, param, value}) => (
+  <div style={{
+    marginTop: 5,
+    color: COLOR.secondary
+  }}>
+    {`${type} ${param}: ${value}`}
+  </div>
+)
+
+const MotorsChart = ({title, motorsData, domainY}) => (
+  <div style={{
+    width: 600
+  }}>
+    <SmallTitle text={title} />
+    <VictoryChart>
+      {motorsData.map((data, i) => <VictoryLine
+        key={i}
+        width={800}
+        domain={{y: domainY}}
+        style={{
+          data: { stroke: COLOR.secondary },
+          parent: { border: '1px solid white' }
+        }}
+       />)}
+    </VictoryChart>
+  </div>
+)
+
 const KillSwitch = ({dispatch, socket, selectedDrone}) => (
   <Button text='Kill drone' onClick={() => dispatch(sendCommand(socket, selectedDrone, JSON.stringify({type: 'kill'})))} />
+)
+
+const TuneButton = ({socket, selectedDrone}) => (
+  <Button text='Tune drone' onClick={() => socket.emit('tune', selectedDrone)} />
 )
 
 const ConnectionLight = ({isConnected, drone}) => (
@@ -217,7 +279,7 @@ const Input = ({input: { ...restInput }, text, style, ...rest}) => {
 
 const SmallTitle = ({text}) => (
   <div style={{
-    color: 'white',
+    color: COLOR.secondary,
     textTransform: 'uppercase',
     letterSpacing: 1,
     padding: 10
