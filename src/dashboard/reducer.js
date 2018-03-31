@@ -35,9 +35,19 @@ const selectedDroneData = (state = List(), {type, data}) => {
   }
 }
 
+const recording = (state = false, {type}) => {
+  switch (type) {
+    case actions.TOGGLE_RECORDING:
+      return !state
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   availableDrones,
   isClientConnected,
   selectedDrone,
-  selectedDroneData
+  selectedDroneData,
+  recording
 })

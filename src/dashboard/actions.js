@@ -34,3 +34,12 @@ export const addDroneData = data => {
     dispatch({type: ADD_DRONE_DATA, data})
   }
 }
+
+export const TOGGLE_RECORDING = 'TOGGLE_RECORDING'
+
+export const toggleRecording = (socket) => {
+  return (dispatch, getState) => {
+    socket.emit('record', !getState().dashboard.recording)
+    dispatch({type: TOGGLE_RECORDING})
+  }
+}

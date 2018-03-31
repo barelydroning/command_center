@@ -12,6 +12,7 @@ const Button = ({text, onClick}) => (
       margin: 10,
       backgroundColor: COLOR.third,
       color: COLOR.secondary,
+      borderColor: COLOR.fourth,
       cursor: 'pointer'
     }}>
     {text}

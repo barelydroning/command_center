@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Title, Button } from '../../common/components'
 import COLOR from '../../common/COLOR'
-import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand, addDroneData } from '../actions'
+import { connectClient, disconnectClient, setDrones, selectDrone, sendCommand, addDroneData, toggleRecording } from '../actions'
 
 import { reduxForm, Field } from 'redux-form'
 
@@ -91,7 +91,7 @@ class Dashboard extends Component {
 
   render () {
     const { socket } = this.state
-    const { dispatch, availableDrones, isClientConnected, selectedDrone, selectedDroneData } = this.props
+    const { dispatch, availableDrones, isClientConnected, selectedDrone, selectedDroneData, recording } = this.props
 
     return (
       <div style={{
@@ -123,9 +123,9 @@ class Dashboard extends Component {
               display: 'flex',
               flexDirection: 'column'
             }}>
-              <Chart title={'Pitch'} data={this.filterData(selectedDroneData, 'pitch')} domainY={[-Math.PI, Math.PI]} />
-              <Chart title='Roll' data={this.filterData(selectedDroneData, 'roll')} domainY={[-Math.PI, Math.PI]} />
-              <Chart title='Azimuth' data={this.filterData(selectedDroneData, 'azimuth')} domainY={[-Math.PI, Math.PI]} />
+              <Chart title={'Pitch'} data={this.filterData(selectedDroneData, 'pitch')} domainY={[-90, 90]} />
+              <Chart title='Roll' data={this.filterData(selectedDroneData, 'roll')} domainY={[-90, 90]} />
+              <Chart title='Azimuth' data={this.filterData(selectedDroneData, 'azimuth')} domainY={[-180, 180]} />
             </div>
             <div>
               <div style={{
@@ -139,6 +139,7 @@ class Dashboard extends Component {
               </div>
               <KillSwitch dispatch={dispatch} socket={socket} selectedDrone={selectedDrone} />
               <TuneButton socket={socket} selectedDrone={selectedDrone} />
+              <RecordButton socket={socket} dispatch={dispatch} recording={recording} />
               <div style={{
                 padding: 20
               }}>
@@ -215,6 +216,10 @@ const KillSwitch = ({dispatch, socket, selectedDrone}) => (
 
 const TuneButton = ({socket, selectedDrone}) => (
   <Button text='Tune drone' onClick={() => socket.emit('tune', selectedDrone)} />
+)
+
+const RecordButton = ({dispatch, socket, recording}) => (
+  <Button text={recording ? 'Stop recording' : 'Record data'} onClick={() => dispatch(toggleRecording(socket))} />
 )
 
 const ConnectionLight = ({isConnected, drone}) => (
@@ -336,7 +341,8 @@ const mapStateToProps = state => ({
   availableDrones: state.dashboard.availableDrones,
   isClientConnected: state.dashboard.isClientConnected,
   selectedDrone: state.dashboard.selectedDrone,
-  selectedDroneData: state.dashboard.selectedDroneData
+  selectedDroneData: state.dashboard.selectedDroneData,
+  recording: state.dashboard.recording
 })
 
 export default connect(mapStateToProps)(Dashboard)
