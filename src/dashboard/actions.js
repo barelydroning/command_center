@@ -27,11 +27,11 @@ export const SEND_COMMAND_LOADING = 'SEND_COMMAND_LOADING'
 export const SEND_COMMAND_SUCCESS = 'SEND_COMMAND_SUCCESS'
 export const SEND_COMMAND_ERROR = 'SEND_COMMAND_ERROR'
 
-export const sendCommand = (socket, drone, command) => {
+export const sendCommand = (socket, robot, command) => {
   return dispatch => {
     dispatch({type: SEND_COMMAND_LOADING})
 
-    socket.emit('drone_command', drone, command)
+    socket.emit('robot_command', robot, command)
   }
 }
 

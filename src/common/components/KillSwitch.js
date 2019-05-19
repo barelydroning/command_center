@@ -5,7 +5,7 @@ import {
 import Button from './Button'
 
 const KillSwitch = ({dispatch, socket, selected}) => (
-  <Button text='Kill drone' onClick={() => dispatch(sendCommand(socket, selected, JSON.stringify({type: 'kill'})))} />
+  <Button text='Kill' onClick={() => dispatch(sendCommand(socket, selected, JSON.stringify({type: 'kill'})))} />
 )
 
 export default KillSwitch
