@@ -11,6 +11,10 @@ export const SET_DRONES = 'SET_DRONES'
 
 export const setDrones = drones => ({type: SET_DRONES, drones})
 
+export const SET_ROVERS = 'SET_ROVERS'
+
+export const setRovers = rovers => ({type: SET_ROVERS, rovers})
+
 export const SELECT_DRONE = 'SELECT_DRONE'
 
 export const selectDrone = drone => ({type: SELECT_DRONE, drone})

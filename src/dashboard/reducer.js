@@ -9,6 +9,15 @@ const availableDrones = (state = [], {type, drones}) => {
   }
 }
 
+const availableRovers = (state = [], {type, rovers}) => {
+  switch (type) {
+    case actions.SET_ROVERS:
+      return rovers
+    default:
+      return state
+  }
+}
+
 const isClientConnected = (state = false, {type}) => {
   switch (type) {
     case actions.CONNECT_CLIENT: return true
@@ -49,5 +58,6 @@ export default combineReducers({
   isClientConnected,
   selectedDrone,
   selectedDroneData,
-  recording
+  recording,
+  availableRovers
 })
