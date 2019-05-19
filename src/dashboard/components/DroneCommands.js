@@ -10,7 +10,8 @@ import {
   Button,
   SmallTitle,
   Input,
-  Chart
+  Chart,
+  KillSwitch
 } from '../../common/components'
 import COLOR from '../../common/COLOR'
 
@@ -191,10 +192,6 @@ const MotorsChart = ({title, motorsData, domainY}) => (
        />)}
     </VictoryChart>
   </div>
-)
-
-const KillSwitch = ({dispatch, socket, selectedDrone}) => (
-  <Button text='Kill drone' onClick={() => dispatch(sendCommand(socket, selectedDrone, JSON.stringify({type: 'kill'})))} />
 )
 
 const TuneButton = ({socket, selectedDrone}) => (

@@ -15,6 +15,7 @@ import {
   selectRover
 } from '../actions'
 import DroneCommands from './DroneCommands'
+import RoverCommands from './RoverCommands'
 
 import openSocket from 'socket.io-client'
 
@@ -92,6 +93,7 @@ class Dashboard extends Component {
             </div>
           </div>
           {selectedDrone && <DroneCommands socket={socket} />}
+          {selectedRover && <RoverCommands socket={socket} />}
         </div>
       </div>
     )
