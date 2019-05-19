@@ -11,7 +11,8 @@ import {
   setRovers,
   setDrones,
   selectDrone,
-  addDroneData
+  addDroneData,
+  selectRover
 } from '../actions'
 import DroneCommands from './DroneCommands'
 
@@ -50,7 +51,14 @@ class Dashboard extends Component {
 
   render () {
     const { socket } = this.state
-    const { dispatch, availableDrones, isClientConnected, selectedDrone } = this.props
+    const {
+      dispatch,
+      availableDrones,
+      isClientConnected,
+      selectedDrone,
+      availableRovers,
+      selectedRover
+    } = this.props
 
     return (
       <div style={{
@@ -76,10 +84,11 @@ class Dashboard extends Component {
           }}>
             <div>
               <SmallTitle text='Drones' />
-              {availableDrones.map(drone => <Drone key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
+              {availableDrones.map(drone => <Robot key={drone} onClick={() => dispatch(selectDrone(drone))} text={drone} selected={selectedDrone === drone} />)}
             </div>
             <div>
               <SmallTitle text='Rovers' />
+              {availableRovers.map(rover => <Robot key={rover} onClick={() => dispatch(selectRover(rover))} text={rover} selected={selectedRover === rover} />)}
             </div>
           </div>
           {selectedDrone && <DroneCommands socket={socket} />}
@@ -102,7 +111,7 @@ const ConnectionLight = ({isConnected, drone}) => (
   }} />
 )
 
-const Drone = ({text, onClick, selected}) => (
+const Robot = ({text, onClick, selected}) => (
   <div style={{
     backgroundColor: selected ? COLOR.secondary : COLOR.third,
     color: selected ? COLOR.primary : COLOR.fourth,
@@ -114,6 +123,7 @@ const Drone = ({text, onClick, selected}) => (
     maxWidth: 300,
     margin: 30,
     fontSize: '1.2em',
+    cursor: 'pointer',
     letterSpacing: 2
   }}
     onClick={onClick}
@@ -123,11 +133,11 @@ const Drone = ({text, onClick, selected}) => (
 )
 
 const mapStateToProps = state => ({
-  availableDrones: state.dashboard.availableDrones,
   isClientConnected: state.dashboard.isClientConnected,
+  availableDrones: state.dashboard.availableDrones,
   selectedDrone: state.dashboard.selectedDrone,
-  selectedDroneData: state.dashboard.selectedDroneData,
-  recording: state.dashboard.recording
+  availableRovers: state.dashboard.availableRovers,
+  selectedRover: state.dashboard.selectedRover
 })
 
 export default connect(mapStateToProps)(Dashboard)

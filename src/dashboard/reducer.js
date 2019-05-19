@@ -28,8 +28,23 @@ const isClientConnected = (state = false, {type}) => {
 
 const selectedDrone = (state = null, {type, drone}) => {
   switch (type) {
-    case actions.SELECT_DRONE: return drone
-    default: return state
+    case actions.SELECT_DRONE:
+      return drone
+    case actions.SELECT_ROVER:
+      return null
+    default:
+      return state
+  }
+}
+
+const selectedRover = (state = null, {type, rover}) => {
+  switch (type) {
+    case actions.SELECT_ROVER:
+      return rover
+    case actions.SELECT_DRONE:
+      return null
+    default:
+      return state
   }
 }
 
@@ -59,5 +74,6 @@ export default combineReducers({
   selectedDrone,
   selectedDroneData,
   recording,
-  availableRovers
+  availableRovers,
+  selectedRover
 })
