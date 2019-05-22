@@ -26,10 +26,12 @@ const isClientConnected = (state = false, {type}) => {
   }
 }
 
-const selectedDrone = (state = null, {type, drone}) => {
+const selectedDrone = (state = null, {type, drone, drones}) => {
   switch (type) {
     case actions.SELECT_DRONE:
       return drone
+    case actions.SET_DRONES:
+      return drones.includes(state) ? state : null
     case actions.SELECT_ROVER:
       return null
     default:
@@ -37,10 +39,12 @@ const selectedDrone = (state = null, {type, drone}) => {
   }
 }
 
-const selectedRover = (state = null, {type, rover}) => {
+const selectedRover = (state = null, {type, rover, rovers}) => {
   switch (type) {
     case actions.SELECT_ROVER:
       return rover
+    case actions.SET_ROVERS:
+      return rovers.includes(state) ? state : null
     case actions.SELECT_DRONE:
       return null
     default:

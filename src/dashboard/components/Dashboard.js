@@ -73,7 +73,7 @@ class Dashboard extends Component {
           backgroundColor: COLOR.third
         }} />
 
-        <ConnectionLight isConnected={isClientConnected} drone={selectedDrone} />
+        <ConnectionLight isConnected={isClientConnected} drone={selectedDrone || selectedRover} />
 
         <div style={{
           display: 'flex',
