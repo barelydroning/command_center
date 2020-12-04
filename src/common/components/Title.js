@@ -8,10 +8,12 @@ const Title = ({text, style}) => (
     paddingBottom: 1,
     fontWeight: 'bold',
     letterSpacing: 2,
-    width: '90%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
     ...style
   }}>
     {text}

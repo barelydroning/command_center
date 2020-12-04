@@ -4,6 +4,7 @@ import SmallTitle from './SmallTitle'
 import Chart from './Chart'
 import Input from './Input'
 import KillSwitch from './KillSwitch'
+import ConnectionLight from './ConnectionLight'
 
 export {
   Title,
@@ -11,5 +12,6 @@ export {
   SmallTitle,
   Chart,
   Input,
-  KillSwitch
+  KillSwitch,
+  ConnectionLight
 }
