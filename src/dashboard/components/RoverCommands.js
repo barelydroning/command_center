@@ -19,7 +19,7 @@ const KEY_LEFT = 37
 const KEY_RIGHT = 39
 
 class RoverCommands extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = ({
@@ -101,7 +101,7 @@ class RoverCommands extends Component {
         B = 1
       }
 
-      dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) }})))
+      dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) } })))
 
 
     }, 100)
@@ -111,11 +111,11 @@ class RoverCommands extends Component {
 
     this.motorCommandsSubmit = ({ A, B }) => {
       const { dispatch, selectedRover, socket } = this.props
-      dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) }})))
+      dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) } })))
     }
   }
 
-  render () {
+  render() {
     const {
       dispatch,
       socket,
@@ -125,11 +125,22 @@ class RoverCommands extends Component {
     return (
       <div style={{
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'column',
+        justifyContent: 'space-between'
       }}>
-        <KillSwitch dispatch={dispatch} socket={socket} selected={selectedRover} />
-        <MotorCommand selected={selectedRover} onSubmit={this.motorCommandsSubmit} />
-        <DirectionControl up={up} down={down} left={left} right={right} />
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row'
+        }}>
+          <KillSwitch dispatch={dispatch} socket={socket} selected={selectedRover} />
+          <MotorCommand selected={selectedRover} onSubmit={this.motorCommandsSubmit} />
+        </div>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row'
+        }}>
+          <DirectionControl up={up} down={down} left={left} right={right} />
+        </div>
       </div>
     )
   }
@@ -178,18 +189,18 @@ let DirectionControl = ({ right, left, up, down }) => (
 
 const DirectionButton = ({ text, style, pressed }) => (
   <div
-  style={{
-    padding: 15,
-    borderRadius: 10,
-    fontSize: '1.2em',
-    letterSpacing: 2,
-    margin: 10,
-    backgroundColor: pressed ? COLOR.secondary : COLOR.third,
-    color: pressed ? COLOR.third : COLOR.secondary,
-    borderColor: COLOR.fourth,
-    cursor: 'pointer',
-    ...style
-  }}
+    style={{
+      padding: 15,
+      borderRadius: 10,
+      fontSize: '1.2em',
+      letterSpacing: 2,
+      margin: 10,
+      backgroundColor: pressed ? COLOR.secondary : COLOR.third,
+      color: pressed ? COLOR.third : COLOR.secondary,
+      borderColor: COLOR.fourth,
+      cursor: 'pointer',
+      ...style
+    }}
   >
     {text}
   </div>

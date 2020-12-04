@@ -123,8 +123,14 @@ class Dashboard extends Component {
                 />)}
               </div>
             </div>
-            {selectedDrone && <DroneCommands socket={socket} />}
-            {selectedRover && <RoverCommands socket={socket} />}
+            <div style={{
+              padding: 20,
+              display: 'flex',
+              flex: 1
+            }}>
+              {selectedDrone && <DroneCommands socket={socket} />}
+              {selectedRover && <RoverCommands socket={socket} />}
+            </div>
           </div>
         </div>
       </div>
