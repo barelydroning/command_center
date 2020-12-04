@@ -18,6 +18,7 @@ import {
 import DroneCommands from './DroneCommands'
 import RoverCommands from './RoverCommands'
 import roverImage from '../../svg/rover.svg'
+import droneImage from '../../svg/drone.svg'
 
 import openSocket from 'socket.io-client'
 
@@ -103,11 +104,23 @@ class Dashboard extends Component {
             }}>
               <div>
                 <SmallTitle text='Drones' />
-                {availableDrones.map((drone, index) => <Robot key={drone} onClick={() => dispatch(selectDrone(drone))} text={index + 1} selected={selectedDrone === drone} />)}
+                {availableDrones.map((drone, index) => <Robot
+                  key={drone}
+                  onClick={() => dispatch(selectDrone(selectedDrone !== drone ? drone : null))}
+                  text={index + 1}
+                  selected={selectedDrone === drone}
+                  image={droneImage}
+                />)}
               </div>
               <div>
                 <SmallTitle text='Rovers' />
-                {availableRovers.map((rover, index) => <Robot key={rover} onClick={() => dispatch(selectRover(rover))} text={index + 1} selected={selectedRover === rover} />)}
+                {availableRovers.map((rover, index) => <Robot
+                  key={rover}
+                  onClick={() => dispatch(selectRover(selectedRover !== rover ? rover : null))}
+                  text={index + 1}
+                  selected={selectedRover === rover}
+                  image={roverImage}
+                />)}
               </div>
             </div>
             {selectedDrone && <DroneCommands socket={socket} />}
@@ -119,7 +132,7 @@ class Dashboard extends Component {
   }
 }
 
-const Robot = ({ text, onClick, selected }) => (
+const Robot = ({ text, onClick, selected, image }) => (
   <div style={{
     backgroundColor: selected ? COLOR.secondary : COLOR.third,
     color: selected ? COLOR.primary : COLOR.fourth,
@@ -140,7 +153,7 @@ const Robot = ({ text, onClick, selected }) => (
   }}
     onClick={onClick}
   >
-    <img src={roverImage} width={60} />
+    <img src={image} width={60} />
     <span
       style={{
         marginLeft: 20
