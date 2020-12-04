@@ -76,11 +76,11 @@ class RoverCommands extends Component {
       let A = 0, B = 0
 
       if (up && right) {
-        A = 0
-        B = 1
-      } else if (up && left) {
         A = 1
         B = 0
+      } else if (up && left) {
+        A = 0
+        B = 1
       } else if (down && right) {
         A = 0
         B = -1
