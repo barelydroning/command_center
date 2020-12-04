@@ -65,7 +65,8 @@ class Dashboard extends Component {
       <div style={{
         backgroundColor: COLOR.primary,
         minHeight: window.innerHeight,
-        paddingTop: 50
+        paddingTop: 50,
+        fontFamily: '"Noah"'
       }}>
         <Title text={'Command center'} style={{
           color: COLOR.secondary,
