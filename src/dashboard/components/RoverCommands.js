@@ -6,10 +6,7 @@ import {
 } from '../actions'
 import {
   Button,
-  SmallTitle,
   Input,
-  Chart,
-  KillSwitch
 } from '../../common/components'
 import COLOR from '../../common/COLOR'
 
@@ -17,6 +14,8 @@ const KEY_UP = 38
 const KEY_DOWN = 40
 const KEY_LEFT = 37
 const KEY_RIGHT = 39
+const KEY_MINUS = 65 // A key
+const KEY_PLUS = 83 // S key 
 
 class RoverCommands extends Component {
   constructor(props) {
@@ -26,8 +25,17 @@ class RoverCommands extends Component {
       right: false,
       left: false,
       up: false,
-      down: false
+      down: false,
+      minus: false,
+      plus: false,
+      speed: 0.7
     })
+
+    this.setSpeed = diff => {
+      const oldSpeed = this.state.speed
+      let newSpeed = Math.max(0, oldSpeed + diff)
+      this.setState({ speed: Math.round(Math.min(newSpeed, 1) * 10) / 10 })
+    }
 
     this.handleKeyDown = event => {
       switch (event.keyCode) {
@@ -42,6 +50,12 @@ class RoverCommands extends Component {
           return
         case KEY_RIGHT:
           this.setState({ right: true })
+          return
+        case KEY_MINUS:
+          this.setState({ minus: true })
+          return
+        case KEY_PLUS:
+          this.setState({ plus: true })
           return
         default:
           return
@@ -62,13 +76,27 @@ class RoverCommands extends Component {
         case KEY_RIGHT:
           this.setState({ right: false })
           return
+        case KEY_MINUS:
+          this.setState({ minus: false })
+          this.setSpeed(-0.1)
+          return
+        case KEY_PLUS:
+          this.setState({ plus: false })
+          this.setSpeed(0.1)
+          return
         default:
           return
       }
     }
 
+    this.handleKeyPress = event => {
+      switch (event.keyCode) {
+        
+      }
+    }
+
     setInterval(() => {
-      const { right, left, up, down } = this.state
+      const { right, left, up, down, speed } = this.state
       const { dispatch, selectedRover, socket } = this.props
 
       if (!selectedRover) return
@@ -76,29 +104,29 @@ class RoverCommands extends Component {
       let A = 0, B = 0
 
       if (up && right) {
-        A = 1
+        A = speed
         B = 0
       } else if (up && left) {
         A = 0
-        B = 1
+        B = speed
       } else if (down && right) {
         A = 0
-        B = -1
+        B = -speed
       } else if (down && left) {
-        A = -1
+        A = -speed
         B = 0
       } else if (up) {
-        A = 1
-        B = 1
+        A = speed
+        B = speed
       } else if (down) {
-        A = -1
-        B = -1
+        A = -speed
+        B = -speed
       } else if (right) {
-        A = 1
-        B = -1
+        A = speed
+        B = -speed
       } else if (left) {
-        A = -1
-        B = 1
+        A = -speed
+        B = speed
       }
 
       dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) } })))
@@ -108,6 +136,7 @@ class RoverCommands extends Component {
 
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
+    document.addEventListener('keypress', this.handleKeyPress)
 
     this.motorCommandsSubmit = ({ A, B }) => {
       const { dispatch, selectedRover, socket } = this.props
@@ -116,24 +145,15 @@ class RoverCommands extends Component {
   }
 
   render() {
-    const {
-      dispatch,
-      socket,
-      selectedRover
-    } = this.props
-    const { up, down, left, right } = this.state
+    const { up, down, left, right, speed, minus, plus } = this.state
     return (
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
       }}>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row'
-        }}>
-          <KillSwitch dispatch={dispatch} socket={socket} selected={selectedRover} />
-          <MotorCommand selected={selectedRover} onSubmit={this.motorCommandsSubmit} />
+        <div>
+          <SpeedControl speed={speed} minus={minus} plus={plus} />
         </div>
         <div style={{
           display: 'flex',
@@ -153,6 +173,23 @@ let MotorCommand = ({ handleSubmit, onSubmit }) => (
       <Field name='B' text='Motor B' component={Input} />
       <Button text='Confirm' onClick={handleSubmit(onSubmit)} />
     </form>
+  </div>
+)
+
+let SpeedControl = ({ speed, minus, plus }) => (
+  <div style={{
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  }}>
+    <DirectionButton text='-' pressed={minus} />
+    <div style={{
+      fontSize: 40,
+      color: COLOR.secondary,
+    }}>
+      {speed}
+    </div>
+    <DirectionButton text='+' pressed={plus} />
   </div>
 )
 
