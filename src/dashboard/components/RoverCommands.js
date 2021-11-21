@@ -104,7 +104,7 @@ class RoverCommands extends Component {
       let A = 0, B = 0
 
       if (up && right) {
-        A = speed
+        A = -speed
         B = 0
       } else if (up && left) {
         A = 0
@@ -113,23 +113,30 @@ class RoverCommands extends Component {
         A = 0
         B = -speed
       } else if (down && left) {
-        A = -speed
+        A = speed
         B = 0
       } else if (up) {
-        A = speed
+        A = -speed
         B = speed
       } else if (down) {
-        A = -speed
-        B = -speed
-      } else if (right) {
         A = speed
         B = -speed
-      } else if (left) {
+      } else if (right) {
         A = -speed
+        B = -speed
+      } else if (left) {
+        A = speed
         B = speed
       }
 
-      dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) } })))
+      dispatch(sendCommand(
+        socket,
+        selectedRover,
+        JSON.stringify({
+          type: 'motors',
+          command: { A: parseFloat(A), B: parseFloat(B) }
+        }))
+      )
 
 
     }, 100)
