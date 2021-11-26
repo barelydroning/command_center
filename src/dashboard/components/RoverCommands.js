@@ -153,12 +153,15 @@ class RoverCommands extends Component {
 
   render() {
     const { up, down, left, right, speed, minus, plus } = this.state
+    const { roverDistance } = this.props
+
     return (
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
       }}>
+        <RoverDistance distance={roverDistance} />
         <div>
           <SpeedControl speed={speed} minus={minus} plus={plus} />
         </div>
@@ -172,6 +175,32 @@ class RoverCommands extends Component {
     )
   }
 }
+
+const RoverDistance = ({ distance }) => (
+  <div
+    style={{
+      color: COLOR.secondary,
+      display: 'flex',
+      flexDirection: 'row',
+    }}
+  >
+    <div
+      style={{
+        fontSize: 40,
+      }}
+    >
+      {distance || '-'}
+    </div>
+    <div
+      style={{
+        marginLeft: 10,
+        fontSize: 40,
+      }}
+    >
+      cm
+    </div>
+  </div>
+)
 
 let MotorCommand = ({ handleSubmit, onSubmit }) => (
   <div>

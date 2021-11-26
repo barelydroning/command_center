@@ -26,7 +26,10 @@ class Dashboard extends Component {
   constructor(props) {
     super(props)
 
-    this.state = ({ socket: openSocket('http://localhost:3001') })
+    this.state = ({
+      socket: openSocket('http://localhost:3001'),
+      roverDistance: null,
+    })
 
     this.state.socket.on('connect', () => {
       this.props.dispatch(connectClient())
@@ -44,6 +47,10 @@ class Dashboard extends Component {
       this.props.dispatch(setRovers(rovers))
     })
 
+    this.state.socket.on('rover_data', ({ rover, ...rest }) => {
+      this.setState({ roverDistance: rest.data[2].centimeters }) // TODO : the structure here should probably change
+    })
+
     this.state.socket.on('drone_data', ({ drone, ...rest }) => {
       drone === this.props.selectedDrone && this.props.dispatch(addDroneData(rest))
     })
@@ -54,7 +61,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { socket } = this.state
+    const { socket, roverDistance } = this.state
     const {
       dispatch,
       availableDrones,
@@ -129,7 +136,7 @@ class Dashboard extends Component {
               flex: 1
             }}>
               {selectedDrone && <DroneCommands socket={socket} />}
-              {selectedRover && <RoverCommands socket={socket} />}
+              {selectedRover && <RoverCommands roverDistance={roverDistance} socket={socket} />}
             </div>
           </div>
         </div>
