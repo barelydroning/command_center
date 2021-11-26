@@ -28,7 +28,7 @@ class RoverCommands extends Component {
       down: false,
       minus: false,
       plus: false,
-      speed: 0.7
+      speed: 0.4
     })
 
     this.setSpeed = diff => {
