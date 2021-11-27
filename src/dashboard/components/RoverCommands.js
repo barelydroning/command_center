@@ -181,6 +181,7 @@ class RoverCommands extends Component {
           width: 'calc(100% - 20px)',
           backgroundColor: COLOR.third,
           padding: 10,
+          justifyContent: 'space-evenly',
         }}>
           <DirectionControl up={up} down={down} left={left} right={right} />
           <SpeedControl speed={speed} minus={minus} plus={plus} />
@@ -220,11 +221,9 @@ const Rover = ({
       <div
         style={{
           width: 100,
-          height: 100,
+          height: 100, // TODO : add some visual interpretation of rover here?
         }}
-      >
-        
-      </div>
+      />
       <RoverDistance distance={roverDistance.right} />
     </div>
   </div>
