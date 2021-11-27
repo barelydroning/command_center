@@ -169,24 +169,66 @@ class RoverCommands extends Component {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}>
-        <RoverDistance distance={roverDistance.left} />
-        <RoverDistance distance={roverDistance.front} />
-        <RoverDistance distance={roverDistance.right} />
-        <div>
-          <SpeedControl speed={speed} minus={minus} plus={plus} />
-        </div>
+        <Rover roverDistance={roverDistance} />
         <div style={{
           display: 'flex',
-          flexDirection: 'row'
+          flexDirection: 'row',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: 'calc(100% - 20px)',
+          backgroundColor: COLOR.third,
+          padding: 10,
         }}>
           <DirectionControl up={up} down={down} left={left} right={right} />
+          <SpeedControl speed={speed} minus={minus} plus={plus} />
         </div>
       </div>
     )
   }
 }
+
+
+
+const Rover = ({
+  roverDistance,
+}) => (
+  <div
+    style={{
+      flexDirection: 'column',
+      display: 'flex',
+    }}
+  >
+    <div
+      style={{
+        flexDirection: 'row',
+        display: 'flex',
+        justifyContent: 'space-around',
+      }}
+    >
+      <RoverDistance distance={roverDistance.front} />
+    </div>
+    <div
+      style={{
+        flexDirection: 'row',
+        display: 'flex',
+      }}
+    >
+      <RoverDistance distance={roverDistance.left} />
+      <div
+        style={{
+          width: 100,
+          height: 100,
+        }}
+      >
+        
+      </div>
+      <RoverDistance distance={roverDistance.right} />
+    </div>
+  </div>
+)
 
 const RoverDistance = ({ distance }) => (
   <div
@@ -225,19 +267,39 @@ let MotorCommand = ({ handleSubmit, onSubmit }) => (
 )
 
 let SpeedControl = ({ speed, minus, plus }) => (
-  <div style={{
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
-  }}>
-    <DirectionButton text='-' pressed={minus} />
-    <div style={{
-      fontSize: 40,
-      color: COLOR.secondary,
-    }}>
-      {speed}
+  <div
+    style={{
+      marginRight: 20,
+      marginLeft: 20,
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
+      paddingTop: 20,
+    }}
+  >
+    <div
+      style={{
+        fontSize: 30,
+        textAlign: 'center',
+        color: COLOR.secondary
+      }}
+    >
+      Speed
     </div>
-    <DirectionButton text='+' pressed={plus} />
+    <div style={{
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    }}>
+      <DirectionButton text='-' pressed={minus} />
+      <div style={{
+        fontSize: 40,
+        color: COLOR.secondary,
+      }}>
+        {speed}
+      </div>
+      <DirectionButton text='+' pressed={plus} />
+    </div>
   </div>
 )
 
@@ -282,7 +344,9 @@ const DirectionButton = ({ text, style, pressed }) => (
       margin: 10,
       backgroundColor: pressed ? COLOR.secondary : COLOR.third,
       color: pressed ? COLOR.third : COLOR.secondary,
-      borderColor: COLOR.fourth,
+      borderColor: COLOR.second,
+      borderWidth: 1,
+      borderStyle: 'solid',
       cursor: 'pointer',
       ...style
     }}
