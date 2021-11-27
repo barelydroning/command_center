@@ -17,6 +17,8 @@ const KEY_RIGHT = 39
 const KEY_MINUS = 65 // A key
 const KEY_PLUS = 83 // S key 
 
+const ROVER_DISTANCE_CUT_OFF_DISTANCE = 20
+
 class RoverCommands extends Component {
   constructor(props) {
     super(props)
@@ -97,7 +99,7 @@ class RoverCommands extends Component {
 
     setInterval(() => {
       const { right, left, up, down, speed } = this.state
-      const { dispatch, selectedRover, socket } = this.props
+      const { dispatch, selectedRover, socket, roverDistance } = this.props
 
       if (!selectedRover) return
 
@@ -116,8 +118,14 @@ class RoverCommands extends Component {
         A = speed
         B = 0
       } else if (up) {
-        A = -speed
-        B = speed
+        // Don't drive in to an obstacle
+        if (roverDistance < ROVER_DISTANCE_CUT_OFF_DISTANCE) {
+          A = 0
+          B = 0
+        } else {
+          A = -speed
+          B = speed
+        }
       } else if (down) {
         A = speed
         B = -speed
