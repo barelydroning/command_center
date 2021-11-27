@@ -119,7 +119,7 @@ class RoverCommands extends Component {
         B = 0
       } else if (up) {
         // Don't drive in to an obstacle
-        if (roverDistance < ROVER_DISTANCE_CUT_OFF_DISTANCE) {
+        if (roverDistance.front < ROVER_DISTANCE_CUT_OFF_DISTANCE) {
           A = 0
           B = 0
         } else {
@@ -161,7 +161,9 @@ class RoverCommands extends Component {
 
   render() {
     const { up, down, left, right, speed, minus, plus } = this.state
-    const { roverDistance } = this.props
+    const {
+      roverDistance,
+  } = this.props
 
     return (
       <div style={{
@@ -169,7 +171,9 @@ class RoverCommands extends Component {
         flexDirection: 'column',
         justifyContent: 'space-between'
       }}>
-        <RoverDistance distance={roverDistance} />
+        <RoverDistance distance={roverDistance.left} />
+        <RoverDistance distance={roverDistance.front} />
+        <RoverDistance distance={roverDistance.right} />
         <div>
           <SpeedControl speed={speed} minus={minus} plus={plus} />
         </div>

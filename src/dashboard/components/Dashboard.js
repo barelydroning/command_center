@@ -28,7 +28,11 @@ class Dashboard extends Component {
 
     this.state = ({
       socket: openSocket('http://localhost:3001'),
-      roverDistance: null,
+      roverDistance: {
+        left: null,
+        front: null,
+        right: null,
+      },
     })
 
     this.state.socket.on('connect', () => {
@@ -48,7 +52,12 @@ class Dashboard extends Component {
     })
 
     this.state.socket.on('rover_data', ({ rover, ...rest }) => {
-      this.setState({ roverDistance: rest.data[2].centimeters }) // TODO : the structure here should probably change
+      const { distanceLeft, distanceFront, distanceRight, } = rest.data[2]
+      this.setState({ roverDistance: {
+        left: distanceLeft,
+        front: distanceFront,
+        right: distanceRight,
+      }})
     })
 
     this.state.socket.on('drone_data', ({ drone, ...rest }) => {
