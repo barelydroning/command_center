@@ -21,6 +21,15 @@ const ROVER_DISTANCE_CUT_OFF_DISTANCE = 20
 
 const UPDATE_INTERVAL_MS = 10
 
+const LIGHT_COLORS = [
+  'red',
+  'yellow',
+  'green',
+  'blue',
+  'purple',
+  'cyan',
+]
+
 class RoverCommands extends Component {
   constructor(props) {
     super(props)
@@ -37,6 +46,7 @@ class RoverCommands extends Component {
         A: 0,
         B: 0,
       },
+      discoInterval: null,
     })
 
     this.setSpeed = diff => {
@@ -99,22 +109,34 @@ class RoverCommands extends Component {
 
     this.handleKeyPress = event => {
       switch (event.keyCode) {
-        
+
       }
     }
 
-    this.setColor = color => {
+    this.setLightColor = color => {
       const { dispatch, socket, selectedRover } = this.props
 
       dispatch(sendCommand(
         socket,
         selectedRover,
         JSON.stringify({
-        type: 'color',
-        command: { color }
-      }))
-    )
-  }
+          type: 'color',
+          command: { color }
+        }))
+      )
+    }
+
+    this.setDiscoLights = () => {
+      this.discoInterval = setInterval(() => {
+        const randomColor = LIGHT_COLORS[Math.floor(Math.random() * LIGHT_COLORS.length)]
+        this.setLightColor(randomColor)
+      }, 200)
+    }
+
+    this.stopDiscoLights = () => {
+      clearInterval(this.discoInterval)
+      this.discoInterval = null
+    }
 
     setInterval(() => {
       const { right, left, up, down, speed, lastMotorState } = this.state
@@ -158,7 +180,7 @@ class RoverCommands extends Component {
         A = speed
         B = speed
       }
-      
+
       if (A !== lastA || B !== lastB) {
         dispatch(sendCommand(
           socket,
@@ -182,7 +204,7 @@ class RoverCommands extends Component {
     const { up, down, left, right, speed, minus, plus } = this.state
     const {
       roverDistance,
-  } = this.props
+    } = this.props
 
     return (
       <div style={{
@@ -200,7 +222,8 @@ class RoverCommands extends Component {
           }}
         >
           <RoverDistance roverDistance={roverDistance} />
-          <SetLight setColor={this.setColor} />
+          <SetLight setLightColor={this.setLightColor} />
+          <DiscoLights setDiscoLights={this.setDiscoLights} stopDiscoLights={this.stopDiscoLights} />
         </div>
         <div style={{
           display: 'flex',
@@ -258,7 +281,7 @@ const RoverDistance = ({
 )
 
 const SetLight = ({
-  setColor,
+  setLightColor,
 }) => (
   <div
     style={{
@@ -274,19 +297,16 @@ const SetLight = ({
       }}
     >
       Set light
-      <IndividualLight setColor={setColor} color='red' />
-      <IndividualLight setColor={setColor} color='yellow' />
-      <IndividualLight setColor={setColor} color='green' />
-      <IndividualLight setColor={setColor} color='blue' />
-      <IndividualLight setColor={setColor} color='purple' />
-      <IndividualLight setColor={setColor} color='cyan' />
+      {LIGHT_COLORS.map(color => (
+        <IndividualLight key={color} setLightColor={setLightColor} color={color} />
+      ))}
     </div>
   </div>
 )
 
-const IndividualLight = ({ color, setColor }) => (
+const IndividualLight = ({ color, setLightColor }) => (
   <div
-    onClick={() => setColor(color)}
+    onClick={() => setLightColor(color)}
     style={{
       width: 20,
       height: 20,
@@ -299,6 +319,13 @@ const IndividualLight = ({ color, setColor }) => (
       backgroundColor: color,
     }}
   />
+)
+
+const DiscoLights = ({ setDiscoLights, stopDiscoLights }) => (
+  <div>
+    <Button text='Disco' onClick={setDiscoLights} />
+    <Button text='Stop Disco' onClick={stopDiscoLights} />
+  </div>
 )
 
 const RoverSingleDistance = ({ distance }) => (
