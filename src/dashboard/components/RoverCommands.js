@@ -19,6 +19,8 @@ const KEY_PLUS = 83 // S key
 
 const ROVER_DISTANCE_CUT_OFF_DISTANCE = 20
 
+const UPDATE_INTERVAL_MS = 10
+
 class RoverCommands extends Component {
   constructor(props) {
     super(props)
@@ -169,7 +171,7 @@ class RoverCommands extends Component {
       }
 
       this.setState({ lastMotorState: { A, B } })
-    }, 50)
+    }, UPDATE_INTERVAL_MS)
 
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
