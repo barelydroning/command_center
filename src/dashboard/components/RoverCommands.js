@@ -30,7 +30,11 @@ class RoverCommands extends Component {
       down: false,
       minus: false,
       plus: false,
-      speed: 0.4
+      speed: 0.4,
+      lastMotorState: {
+        A: 0,
+        B: 0,
+      },
     })
 
     this.setSpeed = diff => {
@@ -97,13 +101,27 @@ class RoverCommands extends Component {
       }
     }
 
+    this.setColor = color => {
+      const { dispatch, socket, selectedRover } = this.props
+
+      dispatch(sendCommand(
+        socket,
+        selectedRover,
+        JSON.stringify({
+        type: 'color',
+        command: { color }
+      }))
+    )
+  }
+
     setInterval(() => {
-      const { right, left, up, down, speed } = this.state
+      const { right, left, up, down, speed, lastMotorState } = this.state
       const { dispatch, selectedRover, socket, roverDistance } = this.props
 
       if (!selectedRover) return
 
       let A = 0, B = 0
+      const { A: lastA, B: lastB } = lastMotorState
 
       if (up && right) {
         A = -speed
@@ -118,6 +136,8 @@ class RoverCommands extends Component {
         A = speed
         B = 0
       } else if (up) {
+        A = -speed
+        B = speed
         // Don't drive in to an obstacle
         if (roverDistance.front < ROVER_DISTANCE_CUT_OFF_DISTANCE) {
           A = 0
@@ -136,27 +156,24 @@ class RoverCommands extends Component {
         A = speed
         B = speed
       }
+      
+      if (A !== lastA || B !== lastB) {
+        dispatch(sendCommand(
+          socket,
+          selectedRover,
+          JSON.stringify({
+            type: 'motors',
+            command: { A: parseFloat(A), B: parseFloat(B) }
+          }))
+        )
+      }
 
-      dispatch(sendCommand(
-        socket,
-        selectedRover,
-        JSON.stringify({
-          type: 'motors',
-          command: { A: parseFloat(A), B: parseFloat(B) }
-        }))
-      )
-
-
-    }, 100)
+      this.setState({ lastMotorState: { A, B } })
+    }, 50)
 
     document.addEventListener('keydown', this.handleKeyDown)
     document.addEventListener('keyup', this.handleKeyUp)
     document.addEventListener('keypress', this.handleKeyPress)
-
-    this.motorCommandsSubmit = ({ A, B }) => {
-      const { dispatch, selectedRover, socket } = this.props
-      dispatch(sendCommand(socket, selectedRover, JSON.stringify({ type: 'motors', command: { A: parseFloat(A), B: parseFloat(B) } })))
-    }
   }
 
   render() {
@@ -171,7 +188,18 @@ class RoverCommands extends Component {
         flexDirection: 'column',
         justifyContent: 'space-between',
       }}>
-        <Rover roverDistance={roverDistance} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flex: 1,
+            gap: 40,
+            justifyContent: 'space-between',
+          }}
+        >
+          <RoverDistance roverDistance={roverDistance} />
+          <SetLight setColor={this.setColor} />
+        </div>
         <div style={{
           display: 'flex',
           flexDirection: 'row',
@@ -191,9 +219,7 @@ class RoverCommands extends Component {
   }
 }
 
-
-
-const Rover = ({
+const RoverDistance = ({
   roverDistance,
 }) => (
   <div
@@ -209,7 +235,7 @@ const Rover = ({
         justifyContent: 'space-around',
       }}
     >
-      <RoverDistance distance={roverDistance.front} />
+      <RoverSingleDistance distance={roverDistance.front} />
     </div>
     <div
       style={{
@@ -217,19 +243,63 @@ const Rover = ({
         display: 'flex',
       }}
     >
-      <RoverDistance distance={roverDistance.left} />
+      <RoverSingleDistance distance={roverDistance.left} />
       <div
         style={{
           width: 100,
           height: 100, // TODO : add some visual interpretation of rover here?
         }}
       />
-      <RoverDistance distance={roverDistance.right} />
+      <RoverSingleDistance distance={roverDistance.right} />
     </div>
   </div>
 )
 
-const RoverDistance = ({ distance }) => (
+const SetLight = ({
+  setColor,
+}) => (
+  <div
+    style={{
+      color: COLOR.secondary,
+      display: 'flex',
+      flexDirection: 'row',
+    }}
+  >
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+      }}
+    >
+      Set light
+      <IndividualLight setColor={setColor} color='red' />
+      <IndividualLight setColor={setColor} color='yellow' />
+      <IndividualLight setColor={setColor} color='green' />
+      <IndividualLight setColor={setColor} color='blue' />
+      <IndividualLight setColor={setColor} color='purple' />
+      <IndividualLight setColor={setColor} color='cyan' />
+    </div>
+  </div>
+)
+
+const IndividualLight = ({ color, setColor }) => (
+  <div
+    onClick={() => setColor(color)}
+    style={{
+      width: 20,
+      height: 20,
+      borderRadius: 20,
+      cursor: 'pointer',
+      borderWidth: 3,
+      margin: 10,
+      borderStyle: 'solid',
+      borderColor: COLOR.secondary,
+      backgroundColor: color,
+    }}
+  />
+)
+
+const RoverSingleDistance = ({ distance }) => (
   <div
     style={{
       color: COLOR.secondary,
